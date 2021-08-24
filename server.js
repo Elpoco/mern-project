@@ -2,7 +2,6 @@ const express = require("express");
 const request = require("request");
 const path = require("path");
 const cors = require("cors");
-const { json } = require("express");
 // const mongoose = require('mongoose')
 
 // mongoose.connect('mongodb://0.0.0.0:27017/mongo-db')
@@ -19,7 +18,7 @@ const { json } = require("express");
 
 const app = express();
 
-var data = "";
+var coinData = "";
 
 setInterval(() => {
   request(
@@ -31,7 +30,7 @@ setInterval(() => {
       //   console.log('statusCode:', response && response.statusCode);
       // Print the HTML for the Google homepage.
       //   console.log(body);
-      data = body;
+      coinData = body;
     }
   );
 }, 1000);
@@ -44,7 +43,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/api/coins", (req, res) => {
-  return json(data);
+  res.send(coinData);
 });
 
 // app.use(express.static("pubilc"));
