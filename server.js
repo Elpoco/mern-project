@@ -2,6 +2,11 @@ const express = require("express");
 const request = require("request");
 const path = require("path");
 const cors = require("cors");
+const app = express();
+const server = app.listen(3000, () => {
+  console.log("server on");
+});
+const io = require("socket.io")(server);
 // const mongoose = require('mongoose')
 
 // mongoose.connect('mongodb://0.0.0.0:27017/mongo-db')
@@ -16,7 +21,19 @@ const cors = require("cors");
 // 	console.log("> db open!!!")
 // })
 
-const app = express();
+app.use(cors());
+app.use(express.static(path.join(__dirname, "react/build")));
+
+var ioSocket = "";
+
+io.on("connection", (socket) => {
+  console.log("socket connect!!!!");
+  // socket.on("init", function (data) {
+  //   socket.emit("data", `hello!`);
+  // });
+  // socket.emit("data", `hello!`);
+  ioSocket = socket;
+});
 
 var coinData = "";
 
@@ -31,12 +48,13 @@ setInterval(() => {
       // Print the HTML for the Google homepage.
       //   console.log(body);
       coinData = body;
+      if (ioSocket != "") {
+        ioSocket.emit("data", coinData);
+        // console.log("emit data~");
+      }
     }
   );
 }, 1000);
-
-app.use(cors());
-app.use(express.static(path.join(__dirname, "react/build")));
 
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "/react/build/index.html"));
@@ -54,10 +72,6 @@ app.get("/api/coins", (req, res) => {
 // app.get("/", (req, res) => {
 //   res.render("index", { res: returnData });
 // });
-
-app.listen(3000, () => {
-  console.log("on");
-});
 
 // user.name = 'test';
 // user.data = 'testetsett';
