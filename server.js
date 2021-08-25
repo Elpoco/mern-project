@@ -36,10 +36,10 @@ setInterval(() => {
 }, 1000);
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, "react/test/build")));
+app.use(express.static(path.join(__dirname, "react/build")));
 
 app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "/react/test/build/index.html"));
+  res.sendFile(path.join(__dirname, "/react/build/index.html"));
 });
 
 app.get("/api/coins", (req, res) => {
