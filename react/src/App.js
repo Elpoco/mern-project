@@ -11,16 +11,16 @@ function App() {
     Object.entries(data[0]).map((entrie, idx) => {
       aData.push({ key: entrie[0], value: entrie[1] });
     });
+    console.log(aData);
     setData(aData);
   };
 
   useEffect(() => {
     api();
+    setInterval(() => {
+      api();
+    }, 1000);
   }, []);
-
-  setInterval(() => {
-    api();
-  }, 1000);
 
   return (
     <div className="App">
