@@ -1,7 +1,7 @@
 const express = require("express");
-const request = require("request");
 const path = require("path");
 const cors = require("cors");
+const { CallApi, getCoinData } = require("./ServerApi");
 const app = express();
 const server = app.listen(3000, () => {
   console.log("server on");
@@ -38,22 +38,13 @@ io.on("connection", (socket) => {
 var coinData = "";
 
 setInterval(() => {
-  request(
-    "https://api.upbit.com/v1/ticker?markets=KRW-ETH",
-    function (error, response, body) {
-      // Print the error if one occurred
-      //   console.log('error:', error);
-      // Print the response status code if a response was received
-      //   console.log('statusCode:', response && response.statusCode);
-      // Print the HTML for the Google homepage.
-      //   console.log(body);
-      coinData = body;
-      if (ioSocket != "") {
-        ioSocket.emit("data", coinData);
-        // console.log("emit data~");
-      }
+  getCoinData((res) => {
+    coinData = res;
+    if (ioSocket != "") {
+      ioSocket.emit("data", res);
+      // console.log("emit data~");
     }
-  );
+  });
 }, 1000);
 
 app.get("/", function (req, res) {
@@ -62,6 +53,24 @@ app.get("/", function (req, res) {
 
 app.get("/api/coins", (req, res) => {
   res.send(coinData);
+});
+
+app.get("/api/market", (req, res) => {
+  CallApi("GET", "/public/ticker/GLM-ETH", (callback) => {
+    res.send(callback);
+  });
+});
+
+app.get("/api/info", (req, res) => {
+  CallApi("POST", "/info/get-wallet-info", req.query, (callback) => {
+    res.send(callback);
+  });
+});
+
+app.get("/api/order", (req, res) => {
+  CallApi("POST", "/trade/order", req.query, (callback) => {
+    res.send(callback);
+  });
 });
 
 // app.use(express.static("pubilc"));
