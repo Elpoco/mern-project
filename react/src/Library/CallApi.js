@@ -7,7 +7,7 @@ export default function CallApi(apiUrl, params = "", callback = null) {
   }
   const URL = "http://127.0.0.1:3000" + apiUrl;
 
-  // console.log(sendData);
+  // console.log(params);
 
   const getCallApi = async () => {
     await axios({ method: "GET", url: URL, params: params })

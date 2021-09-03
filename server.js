@@ -56,7 +56,8 @@ app.get("/api/coins", (req, res) => {
 });
 
 app.get("/api/market", (req, res) => {
-  CallApi("GET", "/public/ticker/GLM-ETH", (callback) => {
+  // CallApi("GET", "/public/ticker/GLM-ETH", (callback) => {
+  CallApi("GET", "/public/ticker/ETH-KLIN", (callback) => {
     res.send(callback);
   });
 });
